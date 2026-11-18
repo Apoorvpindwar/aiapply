@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>My Job Finder</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <a href="/" class="brand">◉ My Job Finder</a
+        ><span>PRIVATE · ON THIS COMPUTER</span>
+      </header>
+      <section class="intro">
+        <p class="eyebrow">YOUR NEXT MOVE</p>
+        <h1>Your resume. <em>Fresh opportunities.</em></h1>
+        <p>Find relevant jobs, then apply on the original website.</p>
+      </section>
+      <section class="resume-panel">
+        <form id="form">
+          <label class="upload" for="file"
+            ><span class="upload-icon">↥</span
+            ><strong id="file-name"
+              >Drop your resume here or choose a file</strong
+            ><span>PDF, DOCX or TXT · up to 8 MB</span
+            ><input type="file" id="file" accept=".pdf,.docx,.txt"
+          /></label>
+          <div id="suggested">
+            Your resume helps suggest roles and a location. You can change them
+            below.
+          </div>
+          <details id="preferences">
+            <summary>Review resume text & hourly refresh</summary>
+            <label
+              >Resume text<textarea
+                id="resume"
+                rows="6"
+                placeholder="Or paste your resume here…"
+              ></textarea>
+            </label>
+            <label class="check"
+              ><input id="hourly" type="checkbox" /> Search hourly while this
+              app runs</label
+            >
+          </details>
+          <section class="filters" aria-label="Search filters">
+            <h2>Your search</h2>
+            <label
+              >Roles
+              <small
+                >Select a preset or enter up to three roles, separated by
+                commas.</small
+              >
+              <input
+                id="roles"
+                value="software engineer, backend developer, fullstack developer"
+                placeholder="software engineer, backend developer, fullstack developer"
+              />
+            </label>
+            <div class="role-presets">
+              <button type="button" data-preset="software engineer">
+                Software engineer
+              </button>
+              <button type="button" data-preset="backend developer">
+                Backend developer
+              </button>
+              <button type="button" data-preset="fullstack developer">
+                Fullstack developer
+              </button>
+              <button type="button" id="all-roles">All three</button>
+            </div>
+            <div class="fields">
+              <label
+                >Location <small>India, or up to 3 cities</small
+                ><input id="locations" value="India" placeholder="India"
+              /></label>
+              <label
+                >Your experience
+                <small>Years; blank means no experience exclusion</small
+                ><input
+                  id="experience"
+                  type="number"
+                  min="0"
+                  max="60"
+                  step="0.5"
+              /></label>
+              <label
+                >Minimum salary (LPA)<small
+                  >INR annual pay; unstated salaries stay</small
+                ><input
+                  id="minimum-lpa"
+                  type="number"
+                  min="0"
+                  max="1000"
+                  step="0.5"
+                  value="14"
+              /></label>
+            </div>
+            <p class="note">
+              Salary ranges use the lower bound. ₹12–18 LPA is excluded at a ₹14
+              LPA minimum. Pay we cannot convert safely stays marked “check
+              salary”.
+            </p>
+            <button type="button" id="apply-filters">
+              Apply pay & experience to current results
+            </button>
+          </section>
+          <div class="actions">
+            <p>Your resume stays here. Only search terms go to portals.</p>
+            <button id="find" class="primary">Find my jobs ↗</button>
+          </div>
+        </form>
+      </section>
+      <p id="notice" role="status" aria-live="polite"></p>
+      <section id="portal-section" hidden>
+        <div class="section-title">
+          <h2>Search the portals directly</h2>
+          <span>Use your own account to apply</span>
+        </div>
+        <div id="portals"></div>
+        <p class="note">
+          These shortcuts use your first saved role/location. The first four
+          sources support automatic search attempts. Other portals are
+          shortcuts, not imported feeds. Check date filters on the portal.
+        </p>
+      </section>
+      <section class="activity">
+        <h2>Portal coverage & manual help</h2>
+        <div id="sources">No searches yet.</div>
+        <p id="stats" class="note"></p>
+        <details>
+          <summary>Why might Naukri or Google be missing?</summary>
+          <p>
+            Naukri may require sign-in/CAPTCHA or deny access outright. Google
+            can present a verification page or a layout the direct scraper
+            cannot read. Use “Open browser / help”, finish verification
+            yourself, then Continue. Scroll or paginate on the portal and import
+            again for more results. No import can guarantee every job.
+          </p>
+          <p id="google-api-status"></p>
+        </details>
+      </section>
+      <section>
+        <div class="section-title">
+          <h2>Fresh matches <span id="count">0</span></h2>
+          <select id="sort" aria-label="Sort jobs">
+            <option value="match">Most relevant</option>
+            <option value="recent" selected>Newest first</option>
+          </select>
+        </div>
+        <p class="note">
+          Posted within 24 hours · Keyword matching · Duplicate listings
+          combined · Exact posting times first; date-only listings are marked
+        </p>
+        <div class="result-filters">
+          <label
+            >Show search group<select id="role-view">
+              <option value="">All selected roles</option>
+            </select></label
+          >
+          <label
+            >Show portal<select id="source-view">
+              <option value="">All portals</option>
+              <option value="linkedin">LinkedIn</option>
+              <option value="naukri">Naukri</option>
+              <option value="google">Google Jobs</option>
+              <option value="indeed">Indeed</option>
+            </select></label
+          >
+        </div>
+        <div id="jobs"></div>
+      </section>
+      <footer>
+        Matching helps you sort jobs; it does not predict interviews. Dates and
+        experience requirements depend on source data.
+      </footer>
+    </main>
+    <dialog id="helper">
+      <div class="dialog-head">
+        <h2>A portal needs your help</h2>
+        <button id="close" aria-label="Close">×</button>
+      </div>
+      <p id="helper-message">
+        Open a portal in Chrome, complete any sign-in or verification yourself,
+        then continue.
+      </p>
+      <div class="fields helper-fields">
+        <label>Role<select id="helper-role"></select></label
+        ><label>Location<select id="helper-location"></select></label>
+      </div>
+      <div id="helper-sources"></div>
+      <div class="dialog-actions">
+        <button id="cancel">Do this later</button
+        ><button class="primary" id="continue">I’m done — Continue</button>
+      </div>
+      <p class="note">
+        This uses a separate, saved browser profile. Enter passwords only on the
+        portal. If import still fails, you can apply directly there.
+      </p>
+    </dialog>
+  </body>
+</html>
